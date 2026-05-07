@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumina Admin Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold:#d4af37;
+      --text:#e0e7ff;
+      --muted:#94a3b8;
+      --panel:rgba(15,23,42,.88);
+    }
+
+    * { box-sizing:border-box; margin:0; padding:0; }
+
+    body {
+      font-family:Inter, sans-serif;
+      background:#0a1428;
+      color:var(--text);
+      min-height:100vh;
+      padding:24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .browser {
+      max-width:560px;
+      width:100%;
+      background:#1e2937;
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:0 30px 90px rgba(0,0,0,.75);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .title-bar {
+      height:46px;
+      background:#1e2937;
+      display:flex;
+      align-items:center;
+      padding:0 18px;
+      gap:8px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+
+    .dot { width:13px; height:13px; border-radius:50%; }
+    .red { background:#ff5f57; }
+    .yellow { background:#ffbd2e; }
+    .green { background:#27c93f; }
+
+    .page {
+      position:relative;
+      padding:54px 28px;
+      overflow:hidden;
+      background:#0a1428;
+    }
+
+    .page::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:url("https://www.deloitte.com/content/dam/assets-zone2/lu/en/img/promos/industries/financial-services/2023/lu_wealth-management-private-banking-efma_1x1.jpg") center/cover no-repeat;
+      filter:blur(24px) brightness(.42);
+      transform:scale(1.15);
+      z-index:1;
+    }
+
+    .page > * {
+      position:relative;
+      z-index:2;
+    }
+
+    .card {
+      background:var(--panel);
+      backdrop-filter:blur(18px);
+      border:1px solid rgba(212,175,55,.3);
+      border-radius:28px;
+      padding:36px;
+      box-shadow:0 22px 70px rgba(0,0,0,.45);
+    }
+
+    h1 {
+      text-align:center;
+      font-size:2.5rem;
+      font-weight:800;
+      background:linear-gradient(90deg,#e0f2fe,var(--gold),#bae6fd);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      margin-bottom:10px;
+    }
+
+    .subtitle {
+      text-align:center;
+      color:var(--muted);
+      margin-bottom:30px;
+    }
+
+    input {
+      width:100%;
+      padding:16px;
+      border-radius:16px;
+      border:1px solid #334155;
+      background:#1e2937;
+      color:white;
+      outline:none;
+      font-size:1rem;
+      margin-bottom:16px;
+    }
+
+    button {
+      width:100%;
+      border:none;
+      border-radius:999px;
+      padding:17px;
+      background:linear-gradient(#d4af37,#f0d080);
+      color:#071225;
+      font-weight:900;
+      cursor:pointer;
+      font-size:1rem;
+    }
+
+    .back {
+      display:block;
+      text-align:center;
+      margin-top:22px;
+      color:#fde68a;
+      text-decoration:none;
+      font-weight:700;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="browser">
+    <div class="title-bar">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+    </div>
+
+    <div class="page">
+      <div class="card">
+        <h1>Admin Login</h1>
+        <p class="subtitle">Protected Lumina admin access.</p>
+
+        <input id="adminPassword" type="password" placeholder="Admin password" />
+
+        <button onclick="adminLogin()">Enter Admin Panel</button>
+
+        <a class="back" href="dashboard.html">← Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = "http://localhost:5000/api/admin";
+
+    async function adminLogin() {
+      const password = document.getElementById("adminPassword").value.trim();
+
+      if (!password) {
+        alert("Enter admin password.");
+        return;
+      }
+
+      try {
+        const res = await fetch(API + "/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          alert(data.message || "Admin login failed");
+          return;
+        }
+
+        localStorage.setItem("luminaAdminToken", data.token);
+        window.location.href = "admin-payments.html";
+
+      } catch (error) {
+        alert("Backend not reachable. Start server first.");
+      }
+    }
+  </script>
+</body>
+</html>

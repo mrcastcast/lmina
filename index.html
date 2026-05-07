@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumina • Illuminate Your Wealth</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold:#d4af37;
+      --gold2:#f0d080;
+      --bg:#0a1428;
+      --text:#e0e7ff;
+      --muted:#94a3b8;
+      --panel:rgba(15,23,42,.84);
+      --border:rgba(212,175,55,.26);
+      --green:#22c55e;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family:Inter, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      padding:24px;
+    }
+
+    .browser {
+      max-width:1280px;
+      margin:auto;
+      background:#1e2937;
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:0 30px 90px rgba(0,0,0,.75);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .title-bar {
+      height:46px;
+      background:#1e2937;
+      display:flex;
+      align-items:center;
+      padding:0 18px;
+      gap:8px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+
+    .dot { width:13px; height:13px; border-radius:50%; }
+    .red { background:#ff5f57; }
+    .yellow { background:#ffbd2e; }
+    .green { background:#27c93f; }
+
+    .page {
+      position:relative;
+      min-height:90vh;
+      background:#0a1428;
+      overflow:hidden;
+    }
+
+    .page::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:url("https://www.deloitte.com/content/dam/assets-zone2/lu/en/img/promos/industries/financial-services/2023/lu_wealth-management-private-banking-efma_1x1.jpg") center/cover no-repeat;
+      filter:blur(26px) brightness(.38);
+      transform:scale(1.18);
+      z-index:1;
+    }
+
+    .page::after {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 20% 15%, rgba(212,175,55,.18), transparent 35%),
+        radial-gradient(circle at 80% 30%, rgba(59,130,246,.22), transparent 38%),
+        linear-gradient(180deg, rgba(10,20,40,.35), rgba(10,20,40,.98));
+      z-index:1;
+    }
+
+    .page > * { position:relative; z-index:2; }
+
+    .nav {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:28px 40px;
+      gap:20px;
+    }
+
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+    }
+
+    .logo {
+      width:44px;
+      height:44px;
+      border-radius:16px;
+      background:rgba(212,175,55,.14);
+      border:1px solid rgba(212,175,55,.35);
+      display:grid;
+      place-items:center;
+      color:var(--gold);
+      font-size:24px;
+      font-weight:900;
+    }
+
+    .brand-text strong {
+      display:block;
+      color:var(--gold);
+      font-size:1.35rem;
+    }
+
+    .brand-text span {
+      display:block;
+      color:var(--muted);
+      font-size:.82rem;
+      margin-top:2px;
+    }
+
+    .nav-links {
+      display:flex;
+      align-items:center;
+      gap:18px;
+      flex-wrap:wrap;
+    }
+
+    .nav-links a {
+      color:#e0e7ff;
+      text-decoration:none;
+      font-weight:700;
+      font-size:.95rem;
+    }
+
+    .nav-links a:hover { color:var(--gold); }
+
+    .nav-btn {
+      background:linear-gradient(#d4af37,#f0d080);
+      color:#071225!important;
+      padding:11px 20px;
+      border-radius:999px;
+      font-weight:900!important;
+    }
+
+    .hero {
+      padding:90px 40px 80px;
+      text-align:center;
+      max-width:1050px;
+      margin:0 auto;
+    }
+
+    .pill {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid rgba(212,175,55,.28);
+      background:rgba(15,23,42,.72);
+      backdrop-filter:blur(16px);
+      padding:10px 18px;
+      border-radius:999px;
+      color:#fde68a;
+      font-size:.95rem;
+      font-weight:700;
+      margin-bottom:28px;
+    }
+
+    h1 {
+      font-size:5.4rem;
+      line-height:1.04;
+      font-weight:900;
+      letter-spacing:-.06em;
+      background:linear-gradient(90deg,#ffffff,#d4af37,#bae6fd);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      margin-bottom:24px;
+    }
+
+    .hero-text {
+      max-width:780px;
+      margin:0 auto 36px;
+      color:#cbd5e1;
+      font-size:1.25rem;
+      line-height:1.7;
+    }
+
+    .hero-actions {
+      display:flex;
+      justify-content:center;
+      gap:16px;
+      flex-wrap:wrap;
+      margin-bottom:54px;
+    }
+
+    .btn {
+      display:inline-block;
+      text-decoration:none;
+      border-radius:999px;
+      padding:16px 28px;
+      font-weight:900;
+      border:1px solid rgba(212,175,55,.32);
+    }
+
+    .btn-primary {
+      background:linear-gradient(#d4af37,#f0d080);
+      color:#071225;
+      box-shadow:0 18px 45px rgba(212,175,55,.25);
+    }
+
+    .btn-secondary {
+      background:rgba(15,23,42,.72);
+      color:#fde68a;
+      backdrop-filter:blur(14px);
+    }
+
+    .hero-stats {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+      max-width:850px;
+      margin:0 auto;
+    }
+
+    .stat {
+      background:var(--panel);
+      backdrop-filter:blur(18px);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:22px;
+      box-shadow:0 18px 50px rgba(0,0,0,.32);
+    }
+
+    .stat strong {
+      display:block;
+      font-size:1.75rem;
+      color:white;
+      margin-bottom:6px;
+    }
+
+    .stat span {
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    section {
+      padding:62px 40px;
+    }
+
+    .section-head {
+      text-align:center;
+      max-width:780px;
+      margin:0 auto 36px;
+    }
+
+    .section-head h2 {
+      font-size:2.65rem;
+      line-height:1.1;
+      background:linear-gradient(90deg,#e0f2fe,#d4af37,#bae6fd);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      margin-bottom:14px;
+    }
+
+    .section-head p {
+      color:#cbd5e1;
+      line-height:1.7;
+      font-size:1.05rem;
+    }
+
+    .grid-3 {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:20px;
+    }
+
+    .grid-4 {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:18px;
+    }
+
+    .card {
+      background:var(--panel);
+      backdrop-filter:blur(18px);
+      border:1px solid var(--border);
+      border-radius:26px;
+      padding:28px;
+      box-shadow:0 18px 50px rgba(0,0,0,.32);
+    }
+
+    .icon {
+      width:48px;
+      height:48px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      background:rgba(212,175,55,.14);
+      border:1px solid rgba(212,175,55,.32);
+      color:#fde68a;
+      font-size:22px;
+      margin-bottom:18px;
+    }
+
+    .card h3 {
+      font-size:1.25rem;
+      margin-bottom:10px;
+      color:white;
+    }
+
+    .card p {
+      color:#cbd5e1;
+      line-height:1.65;
+      font-size:.96rem;
+    }
+
+    .steps {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:18px;
+      counter-reset:step;
+    }
+
+    .step {
+      position:relative;
+      background:var(--panel);
+      backdrop-filter:blur(18px);
+      border:1px solid var(--border);
+      border-radius:26px;
+      padding:28px;
+    }
+
+    .step::before {
+      counter-increment:step;
+      content:counter(step);
+      width:38px;
+      height:38px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(#d4af37,#f0d080);
+      color:#071225;
+      font-weight:900;
+      margin-bottom:18px;
+    }
+
+    .plans-preview {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:18px;
+    }
+
+    .plan {
+      background:var(--panel);
+      backdrop-filter:blur(18px);
+      border:1px solid var(--border);
+      border-radius:26px;
+      padding:24px;
+      position:relative;
+    }
+
+    .plan.popular {
+      border-color:var(--gold);
+      box-shadow:0 22px 60px rgba(212,175,55,.22);
+    }
+
+    .badge {
+      position:absolute;
+      top:-13px;
+      left:50%;
+      transform:translateX(-50%);
+      background:linear-gradient(#d4af37,#f0d080);
+      color:#071225;
+      border-radius:999px;
+      padding:6px 14px;
+      font-size:.75rem;
+      font-weight:900;
+      white-space:nowrap;
+    }
+
+    .plan h3 {
+      font-size:1.25rem;
+      margin-bottom:8px;
+      color:white;
+    }
+
+    .price {
+      font-size:2rem;
+      color:var(--gold);
+      font-weight:900;
+      margin:14px 0 4px;
+    }
+
+    .plan small {
+      color:var(--muted);
+    }
+
+    .trade {
+      margin:18px 0;
+      background:rgba(212,175,55,.11);
+      border:1px solid rgba(212,175,55,.3);
+      padding:14px;
+      border-radius:16px;
+      color:#fde68a;
+      font-weight:800;
+    }
+
+    .plan a {
+      display:block;
+      text-align:center;
+      margin-top:18px;
+      background:linear-gradient(#d4af37,#f0d080);
+      color:#071225;
+      padding:13px;
+      border-radius:999px;
+      text-decoration:none;
+      font-weight:900;
+    }
+
+    .referral-box {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:22px;
+      align-items:center;
+    }
+
+    .mock-panel {
+      background:rgba(15,23,42,.9);
+      border:1px solid rgba(212,175,55,.28);
+      border-radius:30px;
+      padding:26px;
+      box-shadow:0 22px 70px rgba(0,0,0,.38);
+    }
+
+    .mock-row {
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      padding:14px 0;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+
+    .mock-row span { color:var(--muted); }
+    .mock-row strong { color:white; }
+
+    .faq {
+      max-width:900px;
+      margin:0 auto;
+      display:grid;
+      gap:16px;
+    }
+
+    details {
+      background:var(--panel);
+      backdrop-filter:blur(18px);
+      border:1px solid rgba(212,175,55,.22);
+      border-radius:20px;
+      padding:20px 22px;
+    }
+
+    summary {
+      cursor:pointer;
+      color:white;
+      font-weight:800;
+    }
+
+    details p {
+      margin-top:12px;
+      color:#cbd5e1;
+      line-height:1.65;
+    }
+
+    .cta {
+      text-align:center;
+      max-width:850px;
+      margin:0 auto;
+      background:rgba(15,23,42,.88);
+      backdrop-filter:blur(18px);
+      border:1px solid rgba(212,175,55,.3);
+      border-radius:32px;
+      padding:46px;
+      box-shadow:0 22px 70px rgba(0,0,0,.38);
+    }
+
+    .cta h2 {
+      font-size:2.6rem;
+      background:linear-gradient(90deg,#e0f2fe,#d4af37,#bae6fd);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      margin-bottom:14px;
+    }
+
+    .cta p {
+      color:#cbd5e1;
+      line-height:1.7;
+      margin-bottom:24px;
+    }
+
+    .footer {
+      padding:28px 40px 40px;
+      color:#94a3b8;
+      text-align:center;
+      font-size:.9rem;
+      line-height:1.6;
+    }
+
+    @media(max-width:1050px) {
+      .grid-3, .grid-4, .steps, .plans-preview {
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .referral-box {
+        grid-template-columns:1fr;
+      }
+
+      h1 { font-size:4rem; }
+    }
+
+    @media(max-width:680px) {
+      body { padding:10px; }
+
+      .nav {
+        flex-direction:column;
+        align-items:flex-start;
+        padding:22px;
+      }
+
+      .nav-links {
+        width:100%;
+      }
+
+      .nav-links a {
+        flex:1;
+      }
+
+      .hero {
+        padding:55px 20px 55px;
+      }
+
+      h1 {
+        font-size:2.75rem;
+      }
+
+      .hero-text {
+        font-size:1rem;
+      }
+
+      .hero-stats,
+      .grid-3,
+      .grid-4,
+      .steps,
+      .plans-preview {
+        grid-template-columns:1fr;
+      }
+
+      section {
+        padding:46px 20px;
+      }
+
+      .section-head h2,
+      .cta h2 {
+        font-size:2rem;
+      }
+
+      .cta {
+        padding:30px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="browser">
+    <div class="title-bar">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+    </div>
+
+    <div class="page">
+      <nav class="nav">
+        <a class="brand" href="index.html">
+          <div class="logo">✦</div>
+          <div class="brand-text">
+            <strong>Lumina</strong>
+            <span>AI simulation platform</span>
+          </div>
+        </a>
+
+        <div class="nav-links">
+          <a href="Pricing.html">Plans</a>
+          <a href="login.html">Sign In</a>
+          <a class="nav-btn" href="signup.html">Sign Up</a>
+        </div>
+      </nav>
+
+      <main class="hero">
+        <div class="pill">✦ Fictional AI-powered finance simulator</div>
+
+        <h1>Illuminate Your Wealth</h1>
+
+        <p class="hero-text">
+          Lumina is a premium demo platform built around AI market simulations,
+          task-based rewards, referral growth, and manual plan activation.
+          Users explore company trends, complete tasks, and unlock higher simulation limits through selected plans.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="signup.html">Create Account</a>
+          <a class="btn btn-secondary" href="pricing.html">View Plans</a>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat">
+            <strong>12,847</strong>
+            <span>demo members</span>
+          </div>
+
+          <div class="stat">
+            <strong>4 tiers</strong>
+            <span>Starter to Legend</span>
+          </div>
+
+          <div class="stat">
+            <strong>24/7</strong>
+            <span>simulated activity</span>
+          </div>
+        </div>
+      </main>
+
+      <section id="features">
+        <div class="section-head">
+          <h2>Designed to feel like a real modern fintech platform</h2>
+          <p>
+            Lumina combines a polished dashboard, investment simulator, task engine,
+            referral system, and admin approval flow into one connected user experience.
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="icon">🤖</div>
+            <h3>AI Investment Simulator</h3>
+            <p>
+              Users can simulate performance across global companies with dynamic AI confidence,
+              market trend changes, and risk levels that refresh over time.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="icon">✅</div>
+            <h3>Daily Task Rewards</h3>
+            <p>
+              Members complete tasks such as reading insights, checking market updates,
+              and reviewing strategy notes to grow their demo balance.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="icon">👥</div>
+            <h3>Referral Boost System</h3>
+            <p>
+              Every user receives a referral code. More referrals increase that user's
+              own task reward multiplier by +10% per referral.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="icon">⏳</div>
+            <h3>Cooldown-Based Trading</h3>
+            <p>
+              Each plan controls how many AI simulations a user can run every four hours,
+              creating a structured plan-based access model.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="icon">🔐</div>
+            <h3>Manual Payment Review</h3>
+            <p>
+              Users submit a transaction reference, then an admin reviews the request
+              and activates the selected plan from a protected admin panel.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="icon">📊</div>
+            <h3>Member Dashboard</h3>
+            <p>
+              The dashboard displays balance, active plan, referral code, payment status,
+              task rewards, and navigation to the simulator.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="how">
+        <div class="section-head">
+          <h2>How Lumina works</h2>
+          <p>
+            The platform flow is simple: create an account, choose a plan,
+            submit payment proof, wait for admin approval, then use the dashboard and simulator.
+          </p>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <h3>Create account</h3>
+            <p>Register with email, password, phone number, and optional referral code.</p>
+          </div>
+
+          <div class="step">
+            <h3>Choose a plan</h3>
+            <p>Select Starter, Pro, Elite, or Legend depending on simulation access.</p>
+          </div>
+
+          <div class="step">
+            <h3>Submit payment proof</h3>
+            <p>Enter a transaction reference and wait for admin confirmation.</p>
+          </div>
+
+          <div class="step">
+            <h3>Use dashboard</h3>
+            <p>Complete tasks, share referrals, run AI simulations, and track status.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2>AI simulator preview</h2>
+          <p>
+            The simulator displays rotating companies, changing market trends, AI confidence levels,
+            and risk ratings. Each plan has a cooldown limit.
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="icon">AAPL</div>
+            <h3>Apple Inc.</h3>
+            <p>Market Trend: <strong style="color:#86efac;">+2.4%</strong><br>AI Confidence: 82%<br>Risk Level: Low</p>
+          </div>
+
+          <div class="card">
+            <div class="icon">NVDA</div>
+            <h3>NVIDIA</h3>
+            <p>Market Trend: <strong style="color:#86efac;">+4.8%</strong><br>AI Confidence: 88%<br>Risk Level: Medium</p>
+          </div>
+
+          <div class="card">
+            <div class="icon">TSLA</div>
+            <h3>Tesla</h3>
+            <p>Market Trend: <strong style="color:#fca5a5;">-1.2%</strong><br>AI Confidence: 67%<br>Risk Level: High</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="plans">
+        <div class="section-head">
+          <h2>Plan-based access</h2>
+          <p>
+            Plans control how many AI simulations a member can run every four hours.
+            Higher tiers unlock more simulation attempts.
+          </p>
+        </div>
+
+        <div class="plans-preview">
+          <div class="plan">
+            <h3>Starter</h3>
+            <div class="price">€50</div>
+            <small>Entry access</small>
+            <div class="trade">1 trade / 4 hours</div>
+            <a href="pricing.html">Choose Plan</a>
+          </div>
+
+          <div class="plan popular">
+            <div class="badge">MOST POPULAR</div>
+            <h3>Pro</h3>
+            <div class="price">€250</div>
+            <small>Recommended</small>
+            <div class="trade">2 trades / 4 hours</div>
+            <a href="pricing.html">Choose Plan</a>
+          </div>
+
+          <div class="plan">
+            <h3>Elite</h3>
+            <div class="price">€750</div>
+            <small>Premium access</small>
+            <div class="trade">3 trades / 4 hours</div>
+            <a href="pricing.html">Choose Plan</a>
+          </div>
+
+          <div class="plan">
+            <h3>Legend</h3>
+            <div class="price">€1500</div>
+            <small>Highest tier</small>
+            <div class="trade">4 trades / 4 hours</div>
+            <a href="pricing.html">Choose Plan</a>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="referral-box">
+          <div class="section-head" style="text-align:left; margin:0;">
+            <h2>Referral reward multiplier</h2>
+            <p>
+              Every member receives a unique referral code. When another user registers
+              using that code, the original member gains one referral. Each referral adds
+              +10% bonus to that member's own task rewards.
+            </p>
+          </div>
+
+          <div class="mock-panel">
+            <div class="mock-row">
+              <span>Your referral code</span>
+              <strong>LUM482913</strong>
+            </div>
+
+            <div class="mock-row">
+              <span>Total referrals</span>
+              <strong>3</strong>
+            </div>
+
+            <div class="mock-row">
+              <span>Task reward bonus</span>
+              <strong style="color:#86efac;">+30%</strong>
+            </div>
+
+            <div class="mock-row">
+              <span>$20 task result</span>
+              <strong>$26.00</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2>Frequently asked questions</h2>
+          <p>Common questions about how the Lumina demo platform is structured.</p>
+        </div>
+
+        <div class="faq">
+          <details>
+            <summary>Is Lumina a real investment platform?</summary>
+            <p>
+              This version is designed as a fictional/demo web platform for UI, backend,
+              dashboard, referral, and admin-panel learning.
+            </p>
+          </details>
+
+          <details>
+            <summary>How are plans activated?</summary>
+            <p>
+              A user submits payment information through the payment page. The request appears
+              in the protected admin panel, where an admin can approve or reject it.
+            </p>
+          </details>
+
+          <details>
+            <summary>How do referrals affect tasks?</summary>
+            <p>
+              Each registered referral increases the user's own task reward bonus by 10%.
+              For example, 3 referrals means a +30% task reward multiplier.
+            </p>
+          </details>
+
+          <details>
+            <summary>What controls the AI simulator cooldown?</summary>
+            <p>
+              The selected plan controls the number of simulator attempts available every four hours:
+              Starter gets 1, Pro gets 2, Elite gets 3, and Legend gets 4.
+            </p>
+          </details>
+        </div>
+      </section>
+
+      <section>
+        <div class="cta">
+          <h2>Start with Lumina today</h2>
+          <p>
+            Create an account, explore the dashboard, choose a plan, and test the full
+            Lumina user flow from registration to admin approval.
+          </p>
+
+          <div class="hero-actions" style="margin-bottom:0;">
+            <a class="btn btn-primary" href="signup.html">Create Account</a>
+            <a class="btn btn-secondary" href="login.html">Sign In</a>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer">
+        Lumina is a fictional demo interface for educational, design, and software-development purposes.
+        No real financial service, brokerage, investment advice, crypto processing, or guaranteed returns are provided.
+      </div>
+    </div>
+  </div>
+</body>
+</html>
