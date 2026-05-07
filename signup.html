@@ -4,11 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lumina • Sign Up</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    :root { --gold:#D4AF37; }
-    * { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --gold:#D4AF37;
+    }
+
+    * {
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
 
     body {
       font-family:Inter, sans-serif;
@@ -38,7 +46,12 @@
       border-bottom:1px solid rgba(255,255,255,.08);
     }
 
-    .dot { width:13px; height:13px; border-radius:50%; }
+    .dot {
+      width:13px;
+      height:13px;
+      border-radius:50%;
+    }
+
     .red { background:#ff5f57; }
     .yellow { background:#ffbd2e; }
     .green { background:#27c93f; }
@@ -61,7 +74,10 @@
       z-index:1;
     }
 
-    .page > * { position:relative; z-index:2; }
+    .page > * {
+      position:relative;
+      z-index:2;
+    }
 
     .nav {
       position:absolute;
@@ -78,7 +94,9 @@
       font-weight:600;
     }
 
-    .nav a:hover { color:var(--gold); }
+    .nav a:hover {
+      color:var(--gold);
+    }
 
     .form-box {
       max-width:540px;
@@ -147,20 +165,43 @@
       color:#cbd5e1;
     }
 
-    .link-text a { color:var(--gold); text-decoration:none; font-weight:700; }
+    .link-text a {
+      color:var(--gold);
+      text-decoration:none;
+      font-weight:700;
+    }
 
     @media(max-width:650px) {
-      body { padding:10px; }
-      .page { padding:70px 16px 40px; }
-      .form-box { padding:30px 22px; }
-      h1 { font-size:2.25rem; }
-      .nav { left:0; right:0; justify-content:center; }
+
+      body {
+        padding:10px;
+      }
+
+      .page {
+        padding:70px 16px 40px;
+      }
+
+      .form-box {
+        padding:30px 22px;
+      }
+
+      h1 {
+        font-size:2.25rem;
+      }
+
+      .nav {
+        left:0;
+        right:0;
+        justify-content:center;
+      }
     }
   </style>
 </head>
 
 <body>
+
   <div class="browser">
+
     <div class="title-bar">
       <div class="dot red"></div>
       <div class="dot yellow"></div>
@@ -168,35 +209,57 @@
     </div>
 
     <div class="page">
+
       <div class="nav">
-        <a href="index.html">Home</a>
-        <a href="login.html">Sign In</a>
+        <a href="/">Home</a>
+        <a href="/login">Sign In</a>
       </div>
 
       <div class="form-box">
+
         <h1>Create Account</h1>
-        <p class="subtitle">Join Lumina and claim your welcome balance.</p>
+
+        <p class="subtitle">
+          Join Lumina and activate your AI investment access.
+        </p>
 
         <input id="fullName" type="text" placeholder="Full Name">
+
         <input id="email" type="email" placeholder="Email Address">
+
         <input id="phone" type="tel" placeholder="Phone Number (+389 ...)">
-        <input id="referralCode" class="ref-input" type="text" placeholder="Referral Code (optional)">
+
+        <input
+          id="referralCode"
+          class="ref-input"
+          type="text"
+          placeholder="Referral Code (optional)"
+        >
+
         <input id="password" type="password" placeholder="Create Password">
+
         <input id="confirmPassword" type="password" placeholder="Confirm Password">
 
-        <button class="btn" onclick="registerUser()">Create Account</button>
+        <button class="btn" onclick="registerUser()">
+          Create Account
+        </button>
 
         <p class="link-text">
-          Already have an account? <a href="login.html">Sign In</a>
+          Already have an account?
+          <a href="/login">Sign In</a>
         </p>
+
       </div>
     </div>
   </div>
 
   <script>
-    const API_URL = "https://lmnabcknd.onrender.com/api/auth";
+
+    const API_URL =
+      "https://lmnabcknd.onrender.com/api/auth";
 
     const params = new URLSearchParams(window.location.search);
+
     const ref = params.get("ref");
 
     if (ref) {
@@ -204,14 +267,32 @@
     }
 
     async function registerUser() {
-      const fullName = document.getElementById("fullName").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const referralCode = document.getElementById("referralCode").value.trim();
-      const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
 
-      if (!fullName || !email || !phone || !password || !confirmPassword) {
+      const fullName =
+        document.getElementById("fullName").value.trim();
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const phone =
+        document.getElementById("phone").value.trim();
+
+      const referralCode =
+        document.getElementById("referralCode").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+      const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+      if (
+        !fullName ||
+        !email ||
+        !phone ||
+        !password ||
+        !confirmPassword
+      ) {
         alert("Please fill all required fields.");
         return;
       }
@@ -222,17 +303,25 @@
       }
 
       try {
-        const response = await fetch(`${API_URL}/register`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            fullName,
-            email,
-            phone,
-            password,
-            referralCode
-          })
-        });
+
+        const response = await fetch(
+          `${API_URL}/register`,
+          {
+            method:"POST",
+
+            headers:{
+              "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+              fullName,
+              email,
+              phone,
+              password,
+              referralCode
+            })
+          }
+        );
 
         const data = await response.json();
 
@@ -249,19 +338,23 @@
           );
 
           window.location.href =
-            "verify-email.html?email=" +
+            "/verify-email?email=" +
             encodeURIComponent(email);
 
           return;
         }
 
-        window.location.href = "dashboard.html";
-
       } catch (error) {
+
         console.error(error);
-        alert("Backend not reachable. Start npm run dev first.");
+
+        alert(
+          "Backend not reachable."
+        );
       }
     }
+
   </script>
+
 </body>
 </html>

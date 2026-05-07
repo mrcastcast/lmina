@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumina Verify Email</title>
+</head>
+<body>
+  <h1>Verify Email</h1>
+
+  <input id="email" type="email" placeholder="Email">
+  <input id="code" type="text" maxlength="6" placeholder="Verification Code">
+
+  <button onclick="verifyEmail()">Verify</button>
+  <button onclick="resendCode()">Resend Code</button>
+
+  <p id="message"></p>
+
+  <script>
+    const API = "https://lmnabcknd.onrender.com/api/auth";
+
+    const params = new URLSearchParams(window.location.search);
+    const emailFromUrl = params.get("email");
+
+    if (emailFromUrl) {
+      document.getElementById("email").value = emailFromUrl;
+    }
+
+    async function verifyEmail() {
+      const email = document.getElementById("email").value.trim();
+      const code = document.getElementById("code").value.trim();
+
+      const res = await fetch(API + "/verify-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        document.getElementById("message").innerText = data.message || "Verification failed";
+        return;
+      }
+
+      localStorage.setItem("luminaToken", data.token);
+      localStorage.setItem("luminaUserId", data.user.id);
+      localStorage.setItem("luminaName", data.user.fullName);
+      localStorage.setItem("luminaEmail", data.user.email);
+
+      window.location.href = "/dashboard";
+    }
+
+    async function resendCode() {
+      const email = document.getElementById("email").value.trim();
+
+      const res = await fetch(API + "/resend-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await res.json();
+      document.getElementById("message").innerText = data.message;
+    }
+  </script>
+</body>
+</html>

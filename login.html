@@ -211,6 +211,16 @@
         const data = await response.json();
 
         if (!response.ok) {
+
+          if (data.requiresVerification) {
+
+            window.location.href =
+              "/verify-email?email=" +
+              encodeURIComponent(data.email);
+
+            return;
+          }
+
           alert(data.message || "Login failed.");
           return;
         }
