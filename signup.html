@@ -175,7 +175,7 @@
 
       <div class="form-box">
         <h1>Create Account</h1>
-        <p class="subtitle">Join Lumina.</p>
+        <p class="subtitle">Join Lumina and claim your welcome balance.</p>
 
         <input id="fullName" type="text" placeholder="Full Name">
         <input id="email" type="email" placeholder="Email Address">
@@ -241,13 +241,19 @@
           return;
         }
 
-        localStorage.setItem("luminaToken", data.token);
-        localStorage.setItem("luminaUserId", data.user.id);
-        localStorage.setItem("luminaName", data.user.fullName);
-        localStorage.setItem("luminaEmail", data.user.email);
-        localStorage.setItem("luminaBalance", data.user.balance);
-        localStorage.setItem("luminaReferralCode", data.user.referralCode);
-        localStorage.setItem("luminaReferralCount", data.user.referralCount || 0);
+        if (data.requiresVerification) {
+
+          localStorage.setItem(
+            "pendingVerificationEmail",
+            email
+          );
+
+          window.location.href =
+            "verify-email.html?email=" +
+            encodeURIComponent(email);
+
+          return;
+        }
 
         window.location.href = "dashboard.html";
 

@@ -52,11 +52,11 @@
 
       <div class="card">
         <div class="row"><span>Selected Plan</span><strong id="planName">Starter</strong></div>
-        <div class="row"><span>Amount</span><strong id="planPrice">250 USDT</strong></div>
+        <div class="row"><span>Amount</span><strong id="planPrice">50 USDT</strong></div>
         <div class="row"><span>Network</span><strong>USDT TRC20</strong></div>
         <div class="row"><span>Payment Window</span><strong id="timer">14:59</strong></div>
 
-        <div class="wallet" id="walletAddress">WALLET USDT</div>
+        <div class="wallet" id="walletAddress">T_DEMO_WALLET_ADDRESS_DO_NOT_SEND_REAL_USDT_123456789</div>
         <button onclick="copyWallet()">Copy Wallet Address</button>
 
         <div class="qr">DEMO<br>QR</div>
@@ -79,15 +79,15 @@
       window.location.href = "login.html";
     }
 
-    const API = "https://lmnabcknd.onrender.com/api/payments";
+    const API = "http://localhost:5000/api/payments";
 
     const planNumber = Number(localStorage.getItem("luminaPlan")) || 1;
 
     const plans = {
-      1: { name: "Starter", price: 250 },
-      2: { name: "Pro", price: 650 },
-      3: { name: "Elite", price: 1150 },
-      4: { name: "Legend", price: 2100 }
+      1: { name: "Starter", price: 50 },
+      2: { name: "Pro", price: 250 },
+      3: { name: "Elite", price: 750 },
+      4: { name: "Legend", price: 1500 }
     };
 
     document.getElementById("planName").innerText = plans[planNumber].name;
