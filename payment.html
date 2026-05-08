@@ -61,7 +61,7 @@
 
         <div class="qr">DEMO<br>QR</div>
 
-        <input id="txid" placeholder="Paste transaction ID / hash" />
+        <input id="proofImage" type="file" accept="image/*" />
         <button onclick="confirmPayment()">I Have Sent the Payment</button>
 
         <div class="status" id="status"></div>
@@ -98,13 +98,36 @@
       alert("Wallet address copied.");
     }
 
-    async function confirmPayment() {
-      const txid = document.getElementById("txid").value.trim();
+    function fileToBase64(file){
 
-      if (!txid) {
-        alert("Please enter transaction ID.");
+      return new Promise((resolve,reject)=>{
+
+        const reader = new FileReader();
+
+        reader.onload = () =>
+          resolve(reader.result);
+
+        reader.onerror = reject;
+
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function confirmPayment() {
+      const proofFile = document.getElementById("proofImage").files[0];
+
+      if (!proofFile) {
+        alert("Please upload payment screenshot.");
         return;
       }
+
+      if (proofFile.size > 5 * 1024 * 1024) {
+        alert("Maximum image size is 5MB.");
+        return;
+      }
+
+      const proofImage = await fileToBase64(proofFile);
+      const proofImageName = proofFile.name;
 
       const userEmail = localStorage.getItem("luminaEmail");
       const userName = localStorage.getItem("luminaName");
@@ -122,7 +145,8 @@
         planNumber,
         planName: plans[planNumber].name,
         amount: plans[planNumber].price,
-        txid
+        proofImage,
+        proofImageName
       };
 
       try {
@@ -149,7 +173,7 @@
           ✅ Payment Sent<br><br>
           <strong>Payment ID:</strong> ${data.payment.paymentId}<br>
           <strong>Status:</strong> Pending Admin Approval<br><br>
-          Send screenshot/proof to admin with this Payment ID.
+          Screenshot proof uploaded successfully.
         `;
 
         setTimeout(() => {
@@ -157,7 +181,7 @@
         }, 3500);
 
       } catch (err) {
-        alert("Backend not reachable. Start backend server first.");
+        alert("Backend not reachable.");
       }
     }
 
