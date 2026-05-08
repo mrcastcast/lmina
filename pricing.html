@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumina - Pricing Plans</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold:#d4af37;
+      --text:#e0e7ff;
+      --muted:#94a3b8;
+      --panel:rgba(15,23,42,.86);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family:Inter, sans-serif;
+      background:#0a1428;
+      color:var(--text);
+      min-height:100vh;
+      padding:24px;
+    }
+
+    .browser {
+      max-width:1280px;
+      margin:auto;
+      background:#1e2937;
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:0 30px 90px rgba(0,0,0,.75);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .title-bar {
+      height:46px;
+      background:#1e2937;
+      display:flex;
+      align-items:center;
+      padding:0 18px;
+      gap:8px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+
+    .dot { width:13px; height:13px; border-radius:50%; }
+    .red { background:#ff5f57; }
+    .yellow { background:#ffbd2e; }
+    .green { background:#27c93f; }
+
+    .content {
+      position:relative;
+      min-height:88vh;
+      padding:70px 34px;
+      overflow:hidden;
+      background:#0a1428;
+    }
+
+    .content::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:url("https://www.deloitte.com/content/dam/assets-zone2/lu/en/img/promos/industries/financial-services/2023/lu_wealth-management-private-banking-efma_1x1.jpg") center/cover no-repeat;
+      filter:blur(24px) brightness(.42);
+      transform:scale(1.15);
+      z-index:1;
+    }
+
+    .content > * { position:relative; z-index:2; }
+
+    .nav {
+      display:flex;
+      justify-content:flex-end;
+      gap:18px;
+      margin-bottom:34px;
+    }
+
+    .nav a {
+      color:#e0e7ff;
+      text-decoration:none;
+      font-weight:700;
+    }
+
+    .nav a:hover { color:var(--gold); }
+
+    .top {
+      text-align:center;
+      max-width:780px;
+      margin:0 auto 48px;
+    }
+
+    h1 {
+      font-size:3.7rem;
+      font-weight:800;
+      background:linear-gradient(90deg,#e0f2fe,var(--gold),#bae6fd);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      margin-bottom:14px;
+    }
+
+    .subtitle {
+      color:var(--muted);
+      font-size:1.2rem;
+      line-height:1.6;
+    }
+
+    .packages {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:20px;
+      align-items:stretch;
+    }
+
+    .package {
+      background:var(--panel);
+      backdrop-filter:blur(18px);
+      border:1px solid rgba(212,175,55,.24);
+      border-radius:26px;
+      padding:28px;
+      transition:.35s ease;
+      position:relative;
+      box-shadow:0 18px 50px rgba(0,0,0,.35);
+      display:flex;
+      flex-direction:column;
+    }
+
+    .package:hover {
+      transform:translateY(-10px);
+      border-color:rgba(212,175,55,.7);
+      box-shadow:0 26px 70px rgba(212,175,55,.18);
+    }
+
+    .popular {
+      border-color:var(--gold);
+      box-shadow:0 26px 80px rgba(212,175,55,.26);
+    }
+
+    .badge {
+      position:absolute;
+      top:-14px;
+      left:50%;
+      transform:translateX(-50%);
+      background:linear-gradient(#d4af37,#f0d080);
+      color:#0a1428;
+      padding:7px 18px;
+      border-radius:999px;
+      font-size:.78rem;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .plan-name {
+      font-size:1.45rem;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+
+    .plan-label {
+      color:var(--muted);
+      font-size:.95rem;
+      min-height:38px;
+    }
+
+    .price {
+      font-size:2.7rem;
+      font-weight:800;
+      color:var(--gold);
+      margin:22px 0 4px;
+    }
+
+    .small {
+      color:var(--muted);
+      font-size:.88rem;
+      margin-bottom:22px;
+    }
+
+    .trade-box {
+      background:rgba(212,175,55,.11);
+      border:1px solid rgba(212,175,55,.34);
+      border-radius:18px;
+      padding:15px;
+      margin-bottom:22px;
+    }
+
+    .trade-box strong {
+      display:block;
+      color:#fde68a;
+      font-size:1.25rem;
+    }
+
+    ul {
+      list-style:none;
+      margin:0 0 24px;
+      line-height:2;
+      color:#cbd5e1;
+      flex:1;
+    }
+
+    li {
+      position:relative;
+      padding-left:25px;
+      font-size:.95rem;
+    }
+
+    li::before {
+      content:"✓";
+      color:var(--gold);
+      position:absolute;
+      left:0;
+      font-weight:800;
+    }
+
+    .btn {
+      width:100%;
+      border:none;
+      border-radius:999px;
+      padding:16px;
+      background:linear-gradient(#d4af37,#f0d080);
+      color:#0a1428;
+      font-weight:800;
+      cursor:pointer;
+      font-size:1rem;
+    }
+
+    .btn:hover { transform:scale(1.03); }
+
+    .note {
+      margin-top:30px;
+      text-align:center;
+      color:#cbd5e1;
+      background:rgba(15,23,42,.72);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:16px;
+      font-size:.95rem;
+    }
+
+    @media(max-width:1100px) {
+      .packages { grid-template-columns:repeat(2,1fr); }
+    }
+
+    @media(max-width:650px) {
+      body { padding:10px; }
+      .content { padding:38px 18px; }
+      h1 { font-size:2.5rem; }
+      .packages { grid-template-columns:1fr; }
+      .nav { justify-content:center; flex-wrap:wrap; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="browser">
+    <div class="title-bar">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+    </div>
+
+    <div class="content">
+      <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="login.html">Sign In</a>
+      </div>
+
+      <div class="top">
+        <h1>Choose Your Lumina Plan</h1>
+        <p class="subtitle">
+          Select an access tier for AI Investments, trading cooldowns, community features and referral tools.
+        </p>
+      </div>
+
+      <div class="packages">
+        <div class="package">
+          <div class="plan-name">Starter</div>
+          <p class="plan-label">For new members testing the platform.</p>
+          <div class="price">$250</div>
+          <div class="small">Entry access</div>
+
+          <div class="trade-box">
+            <strong>2 Trades</strong>
+            every 24 hours
+          </div>
+
+          <ul>
+            <li>Basic AI Investments</li>
+            <li>Active portfolio view</li>
+            <li>Daily task rewards</li>
+            <li>24/7 Live Support</li>
+          </ul>
+
+          <button class="btn" onclick="selectPlan(1)">Choose Starter</button>
+        </div>
+
+        <div class="package popular">
+          <div class="badge">MOST POPULAR</div>
+          <div class="plan-name">Pro</div>
+          <p class="plan-label">Balanced access for active users.</p>
+          <div class="price">$600</div>
+          <div class="small">Recommended</div>
+
+          <div class="trade-box">
+            <strong>3 Trades</strong>
+            every 24 hours
+          </div>
+
+          <ul>
+            <li>Advanced AI Investments</li>
+            <li>Market trend refresh</li>
+            <li>Priority dashboard insights</li>
+            <li>24/7 Live Support</li>
+
+          </ul>
+
+          <button class="btn" onclick="selectPlan(2)">Choose Pro</button>
+        </div>
+
+        <div class="package">
+          <div class="plan-name">Elite</div>
+          <p class="plan-label">Higher activity and deeper insights.</p>
+          <div class="price">$1150</div>
+          <div class="small">Premium access</div>
+
+          <div class="trade-box">
+            <strong>5 Trades</strong>
+            every 24 hours
+          </div>
+
+          <ul>
+            <li>VIP AI Investment tools</li>
+            <li>Private community feed</li>
+            <li>Early feature previews</li>
+            <li>24/7 Live Support</li>
+
+          </ul>
+
+          <button class="btn" onclick="selectPlan(3)">Choose Elite</button>
+        </div>
+
+        <div class="package">
+          <div class="badge">VIP</div>
+          <div class="plan-name">Legend</div>
+          <p class="plan-label">Maximum access and status.</p>
+          <div class="price">$2100</div>
+          <div class="small">Highest tier</div>
+
+          <div class="trade-box">
+            <strong>6 Trades</strong>
+            every 24 hours
+          </div>
+
+          <ul>
+            <li>Highest AI access level</li>
+            <li>VIP community status</li>
+            <li>Full dashboard</li>
+            <li>24/7 Live Support</li>
+
+          </ul>
+
+          <button class="btn" onclick="selectPlan(4)">Choose Legend</button>
+        </div>
+      </div>
+
+      <div class="note">
+        If you are not signed in, selecting a plan will take you to login first. After login, you will continue to payment.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function selectPlan(planNumber) {
+      const token = localStorage.getItem("luminaToken");
+
+      localStorage.setItem("pendingPlan", planNumber);
+
+      if (!token) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      localStorage.setItem("luminaPlan", planNumber);
+      localStorage.removeItem("pendingPlan");
+      window.location.href = "payment.html";
+    }
+  </script>
+</body>
+</html>
