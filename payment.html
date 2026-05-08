@@ -52,7 +52,7 @@
 
       <div class="card">
         <div class="row"><span>Selected Plan</span><strong id="planName">Starter</strong></div>
-        <div class="row"><span>Amount</span><strong id="planPrice">50 USDT</strong></div>
+        <div class="row"><span>Amount</span><strong id="planPrice">250 USDT</strong></div>
         <div class="row"><span>Network</span><strong>USDT TRC20</strong></div>
         <div class="row"><span>Payment Window</span><strong id="timer">14:59</strong></div>
 
@@ -84,10 +84,10 @@
     const planNumber = Number(localStorage.getItem("luminaPlan")) || 1;
 
     const plans = {
-      1: { name: "Starter", price: 50 },
-      2: { name: "Pro", price: 250 },
-      3: { name: "Elite", price: 750 },
-      4: { name: "Legend", price: 1500 }
+      1: { name: "Starter", price: 250 },
+      2: { name: "Pro", price: 600 },
+      3: { name: "Elite", price: 1150 },
+      4: { name: "Legend", price: 2100 }
     };
 
     document.getElementById("planName").innerText = plans[planNumber].name;
