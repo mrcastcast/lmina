@@ -3,66 +3,468 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lumina Verify Email</title>
-</head>
-<body>
-  <h1>Verify Email</h1>
 
-  <input id="email" type="email" placeholder="Email">
-  <input id="code" type="text" maxlength="6" placeholder="Verification Code">
+  <title>Lumina • Verify Email</title>
 
-  <button onclick="verifyEmail()">Verify</button>
-  <button onclick="resendCode()">Resend Code</button>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <p id="message"></p>
+  <style>
 
-  <script>
-    const API = "https://lmnabcknd.onrender.com/api/auth";
-
-    const params = new URLSearchParams(window.location.search);
-    const emailFromUrl = params.get("email");
-
-    if (emailFromUrl) {
-      document.getElementById("email").value = emailFromUrl;
+    :root{
+      --gold:#d4af37;
+      --bg:#0a1428;
+      --card:rgba(15,23,42,.9);
+      --text:#e0e7ff;
+      --muted:#94a3b8;
     }
 
-    async function verifyEmail() {
-      const email = document.getElementById("email").value.trim();
-      const code = document.getElementById("code").value.trim();
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
 
-      const res = await fetch(API + "/verify-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, code })
-      });
+    body{
+      font-family:Inter,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      overflow:hidden;
+    }
 
-      const data = await res.json();
+    .background{
+      position:fixed;
+      inset:0;
+      background:
+      url("https://www.deloitte.com/content/dam/assets-zone2/lu/en/img/promos/industries/financial-services/2023/lu_wealth-management-private-banking-efma_1x1.jpg")
+      center/cover no-repeat;
 
-      if (!res.ok) {
-        document.getElementById("message").innerText = data.message || "Verification failed";
-        return;
+      filter:blur(24px) brightness(.35);
+      transform:scale(1.1);
+      z-index:-1;
+    }
+
+    .browser{
+      width:100%;
+      max-width:560px;
+      background:#1e2937;
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:0 35px 100px rgba(0,0,0,.7);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .title-bar{
+      height:46px;
+      background:#1e2937;
+      display:flex;
+      align-items:center;
+      padding:0 18px;
+      gap:8px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+
+    .dot{
+      width:13px;
+      height:13px;
+      border-radius:50%;
+    }
+
+    .red{background:#ff5f57;}
+    .yellow{background:#ffbd2e;}
+    .green{background:#27c93f;}
+
+    .content{
+      padding:55px 34px;
+      background:rgba(10,20,40,.88);
+      backdrop-filter:blur(16px);
+    }
+
+    .logo{
+      width:74px;
+      height:74px;
+      margin:0 auto 24px;
+      border-radius:24px;
+      background:rgba(212,175,55,.14);
+      border:1px solid rgba(212,175,55,.35);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--gold);
+      font-size:34px;
+      font-weight:800;
+      box-shadow:0 0 40px rgba(212,175,55,.15);
+    }
+
+    h1{
+      text-align:center;
+      font-size:2.5rem;
+      font-weight:800;
+      margin-bottom:14px;
+
+      background:linear-gradient(
+        90deg,
+        #e0f2fe,
+        var(--gold),
+        #bae6fd
+      );
+
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .subtitle{
+      text-align:center;
+      color:var(--muted);
+      margin-bottom:36px;
+      line-height:1.7;
+      font-size:1rem;
+    }
+
+    label{
+      display:block;
+      margin-bottom:10px;
+      color:#cbd5e1;
+      font-weight:600;
+    }
+
+    input{
+      width:100%;
+      padding:18px;
+      border-radius:16px;
+      border:1px solid #334155;
+      background:#1e2937;
+      color:white;
+      outline:none;
+      margin-bottom:20px;
+      font-size:1rem;
+    }
+
+    input:focus{
+      border-color:rgba(212,175,55,.8);
+      box-shadow:0 0 0 3px rgba(212,175,55,.12);
+    }
+
+    #code{
+      text-align:center;
+      font-size:2rem;
+      letter-spacing:10px;
+      font-weight:800;
+    }
+
+    .btn{
+      width:100%;
+      border:none;
+      padding:18px;
+      border-radius:999px;
+      font-size:1.05rem;
+      font-weight:800;
+      cursor:pointer;
+      transition:.25s;
+      margin-top:4px;
+    }
+
+    .primary{
+      background:linear-gradient(#d4af37,#f0d080);
+      color:#0a1428;
+    }
+
+    .primary:hover{
+      transform:translateY(-2px);
+      box-shadow:0 15px 35px rgba(212,175,55,.25);
+    }
+
+    .secondary{
+      background:rgba(15,23,42,.7);
+      color:#fde68a;
+      border:1px solid rgba(212,175,55,.25);
+      margin-top:14px;
+    }
+
+    .secondary:hover{
+      background:rgba(15,23,42,.95);
+    }
+
+    #message{
+      margin-top:22px;
+      padding:16px;
+      border-radius:16px;
+      display:none;
+      text-align:center;
+      font-weight:600;
+      line-height:1.5;
+    }
+
+    .success{
+      display:block !important;
+      background:rgba(34,197,94,.14);
+      border:1px solid rgba(34,197,94,.28);
+      color:#86efac;
+    }
+
+    .error{
+      display:block !important;
+      background:rgba(239,68,68,.14);
+      border:1px solid rgba(239,68,68,.28);
+      color:#fca5a5;
+    }
+
+    .bottom{
+      margin-top:28px;
+      text-align:center;
+      color:#94a3b8;
+      font-size:.95rem;
+    }
+
+    .bottom a{
+      color:var(--gold);
+      text-decoration:none;
+      font-weight:700;
+    }
+
+    @media(max-width:600px){
+
+      .content{
+        padding:42px 22px;
       }
 
-      localStorage.setItem("luminaToken", data.token);
-      localStorage.setItem("luminaUserId", data.user.id);
-      localStorage.setItem("luminaName", data.user.fullName);
-      localStorage.setItem("luminaEmail", data.user.email);
+      h1{
+        font-size:2rem;
+      }
 
-      window.location.href = "/dashboard";
+      #code{
+        font-size:1.55rem;
+        letter-spacing:6px;
+      }
     }
 
-    async function resendCode() {
-      const email = document.getElementById("email").value.trim();
+  </style>
+</head>
 
-      const res = await fetch(API + "/resend-code", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
-      });
+<body>
 
-      const data = await res.json();
-      document.getElementById("message").innerText = data.message;
+  <div class="background"></div>
+
+  <div class="browser">
+
+    <div class="title-bar">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+    </div>
+
+    <div class="content">
+
+      <div class="logo">✦</div>
+
+      <h1>Verify Email</h1>
+
+      <p class="subtitle">
+        Enter the 6-digit verification code we sent to your email address to activate your Lumina account.
+      </p>
+
+      <label>Email Address</label>
+
+      <input
+        id="email"
+        type="email"
+        placeholder="your@email.com"
+      >
+
+      <label>Verification Code</label>
+
+      <input
+        id="code"
+        type="text"
+        maxlength="6"
+        placeholder="000000"
+      >
+
+      <button
+        class="btn primary"
+        onclick="verifyEmail()"
+      >
+        Verify Account
+      </button>
+
+      <button
+        class="btn secondary"
+        onclick="resendCode()"
+      >
+        Resend Code
+      </button>
+
+      <div id="message"></div>
+
+      <div class="bottom">
+        Already verified?
+        <a href="/login">Sign In</a>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+
+    const API =
+      "https://lmnabcknd.onrender.com/api/auth";
+
+    const params =
+      new URLSearchParams(window.location.search);
+
+    const emailFromUrl =
+      params.get("email");
+
+    if (emailFromUrl) {
+      document.getElementById("email").value =
+        emailFromUrl;
     }
+
+    function showMessage(text,type){
+
+      const box =
+        document.getElementById("message");
+
+      box.innerText = text;
+
+      box.className = type;
+    }
+
+    async function verifyEmail(){
+
+      const email =
+        document.getElementById("email")
+        .value
+        .trim();
+
+      const code =
+        document.getElementById("code")
+        .value
+        .trim();
+
+      try{
+
+        const res = await fetch(
+          API + "/verify-email",
+          {
+            method:"POST",
+
+            headers:{
+              "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+              email,
+              code
+            })
+          }
+        );
+
+        const data = await res.json();
+
+        if(!res.ok){
+
+          showMessage(
+            data.message || "Verification failed.",
+            "error"
+          );
+
+          return;
+        }
+
+        localStorage.setItem(
+          "luminaToken",
+          data.token
+        );
+
+        localStorage.setItem(
+          "luminaUserId",
+          data.user.id
+        );
+
+        localStorage.setItem(
+          "luminaName",
+          data.user.fullName
+        );
+
+        localStorage.setItem(
+          "luminaEmail",
+          data.user.email
+        );
+
+        showMessage(
+          "Email verified successfully. Redirecting...",
+          "success"
+        );
+
+        setTimeout(()=>{
+          window.location.href = "/dashboard";
+        },1200);
+
+      }catch(error){
+
+        showMessage(
+          "Backend not reachable.",
+          "error"
+        );
+      }
+    }
+
+    async function resendCode(){
+
+      const email =
+        document.getElementById("email")
+        .value
+        .trim();
+
+      try{
+
+        const res = await fetch(
+          API + "/resend-code",
+          {
+            method:"POST",
+
+            headers:{
+              "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+              email
+            })
+          }
+        );
+
+        const data = await res.json();
+
+        if(!res.ok){
+
+          showMessage(
+            data.message || "Could not resend code.",
+            "error"
+          );
+
+          return;
+        }
+
+        showMessage(
+          "New verification code sent.",
+          "success"
+        );
+
+      }catch(error){
+
+        showMessage(
+          "Backend not reachable.",
+          "error"
+        );
+      }
+    }
+
   </script>
+
 </body>
 </html>
