@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Lumina • Forgot Password</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{--gold:#d4af37;--bg:#0a1428;--text:#e0e7ff;--muted:#94a3b8;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:Inter,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+    .background{position:fixed;inset:0;background:url("https://www.deloitte.com/content/dam/assets-zone2/lu/en/img/promos/industries/financial-services/2023/lu_wealth-management-private-banking-efma_1x1.jpg") center/cover no-repeat;filter:blur(24px) brightness(.35);transform:scale(1.1);z-index:-1;}
+    .browser{width:100%;max-width:560px;background:#1e2937;border-radius:24px;overflow:hidden;box-shadow:0 35px 100px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.08);}
+    .title-bar{height:46px;background:#1e2937;display:flex;align-items:center;padding:0 18px;gap:8px;border-bottom:1px solid rgba(255,255,255,.08);}
+    .dot{width:13px;height:13px;border-radius:50%;}
+    .red{background:#ff5f57}.yellow{background:#ffbd2e}.green{background:#27c93f}
+    .content{padding:50px 34px;background:rgba(10,20,40,.88);backdrop-filter:blur(16px);}
+    .logo{width:72px;height:72px;margin:0 auto 22px;border-radius:24px;background:rgba(212,175,55,.14);border:1px solid rgba(212,175,55,.35);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:34px;font-weight:800;}
+    h1{text-align:center;font-size:2.4rem;font-weight:800;margin-bottom:14px;background:linear-gradient(90deg,#e0f2fe,var(--gold),#bae6fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .subtitle{text-align:center;color:var(--muted);margin-bottom:30px;line-height:1.6;}
+    label{display:block;margin-bottom:9px;color:#cbd5e1;font-weight:600;}
+    input{width:100%;padding:17px;border-radius:16px;border:1px solid #334155;background:#1e2937;color:white;outline:none;margin-bottom:18px;font-size:1rem;}
+    input:focus{border-color:rgba(212,175,55,.8);box-shadow:0 0 0 3px rgba(212,175,55,.12);}
+    #code{text-align:center;font-size:1.6rem;letter-spacing:7px;font-weight:800;}
+    button{width:100%;border:none;padding:17px;border-radius:999px;font-size:1.05rem;font-weight:800;cursor:pointer;margin-top:4px;background:linear-gradient(#d4af37,#f0d080);color:#0a1428;}
+    .secondary{background:rgba(15,23,42,.7);color:#fde68a;border:1px solid rgba(212,175,55,.25);margin-top:12px;}
+    #message{display:none;margin-top:20px;padding:15px;border-radius:16px;text-align:center;font-weight:600;line-height:1.5;}
+    .success{display:block!important;background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.28);color:#86efac;}
+    .error{display:block!important;background:rgba(239,68,68,.14);border:1px solid rgba(239,68,68,.28);color:#fca5a5;}
+    .bottom{margin-top:24px;text-align:center;color:#94a3b8;font-size:.95rem;}
+    .bottom a{color:var(--gold);text-decoration:none;font-weight:700;}
+  </style>
+</head>
+
+<body>
+  <div class="background"></div>
+
+  <div class="browser">
+    <div class="title-bar">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+    </div>
+
+    <div class="content">
+      <div class="logo">✦</div>
+
+      <h1>Forgot Password</h1>
+
+      <p class="subtitle">
+        Enter your email to receive a reset code, then set a new password.
+      </p>
+
+      <label>Email Address</label>
+      <input id="email" type="email" placeholder="your@email.com">
+
+      <button onclick="sendCode()">Send Reset Code</button>
+
+      <label style="margin-top:20px;">Reset Code</label>
+      <input id="code" type="text" maxlength="6" placeholder="000000">
+
+      <label>New Password</label>
+      <input id="newPassword" type="password" placeholder="New password">
+
+      <button class="secondary" onclick="resetPassword()">Reset Password</button>
+
+      <div id="message"></div>
+
+      <div class="bottom">
+        Remembered it?
+        <a href="/login">Back to Login</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = "https://lmnabcknd-production.up.railway.app/api/auth";
+
+    function showMessage(text, type) {
+      const box = document.getElementById("message");
+      box.innerText = text;
+      box.className = type;
+    }
+
+    async function sendCode() {
+      const email = document.getElementById("email").value.trim();
+
+      if (!email) {
+        showMessage("Please enter your email.", "error");
+        return;
+      }
+
+      try {
+        const res = await fetch(API + "/forgot-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          showMessage(data.message || "Could not send reset code.", "error");
+          return;
+        }
+
+        showMessage("Reset code sent to your email.", "success");
+
+      } catch (error) {
+        showMessage("Backend not reachable.", "error");
+      }
+    }
+
+    async function resetPassword() {
+      const email = document.getElementById("email").value.trim();
+      const code = document.getElementById("code").value.trim();
+      const newPassword = document.getElementById("newPassword").value;
+
+      if (!email || !code || !newPassword) {
+        showMessage("Please fill email, code and new password.", "error");
+        return;
+      }
+
+      try {
+        const res = await fetch(API + "/reset-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, code, newPassword })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          showMessage(data.message || "Password reset failed.", "error");
+          return;
+        }
+
+        showMessage("Password reset successful. Redirecting to login...", "success");
+
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 1400);
+
+      } catch (error) {
+        showMessage("Backend not reachable.", "error");
+      }
+    }
+  </script>
+</body>
+</html>
