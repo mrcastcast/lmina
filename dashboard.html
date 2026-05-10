@@ -14,6 +14,7 @@
       --text:#e0e7ff;
       --muted:#94a3b8;
       --green:#22c55e;
+      --red:#ef4444;
     }
 
     * { box-sizing:border-box; margin:0; padding:0; }
@@ -192,41 +193,52 @@
       margin-bottom:18px;
     }
 
-    .tasks {
-      display:flex;
-      flex-direction:column;
-      gap:14px;
+    .overview-grid {
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:16px;
     }
 
-    .task {
+    .overview-box,
+    .market-item {
+      background:rgba(30,41,59,.75);
+      border:1px solid rgba(255,255,255,.08);
+      padding:18px;
+      border-radius:18px;
+    }
+
+    .overview-box small,
+    .market-item small {
+      color:var(--muted);
+    }
+
+    .overview-box strong {
+      display:block;
+      margin-top:8px;
+      font-size:1.5rem;
+      color:#fff;
+    }
+
+    .market-list {
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .market-item {
       display:flex;
       justify-content:space-between;
       align-items:center;
-      background:rgba(30,41,59,.75);
-      border:1px solid rgba(255,255,255,.08);
-      padding:16px;
-      border-radius:16px;
-      gap:14px;
     }
 
-    .task button {
-      border:none;
-      border-radius:999px;
-      padding:10px 15px;
+    .market-positive {
+      color:#22c55e;
       font-weight:800;
-      background:linear-gradient(#d4af37,#f0d080);
-      color:#0a1428;
-      cursor:pointer;
     }
 
-    .task.done {
-      opacity:.65;
-    }
-
-    .task.done button {
-      background:rgba(34,197,94,.18);
-      color:#86efac;
-      cursor:not-allowed;
+    .market-negative {
+      color:#ef4444;
+      font-weight:800;
     }
 
     .ref-box {
@@ -259,10 +271,10 @@
       .top { flex-direction:column; align-items:flex-start; }
       .grid { grid-template-columns:1fr; }
       .stats { grid-template-columns:1fr; }
+      .overview-grid { grid-template-columns:1fr; }
       .balance { font-size:2.8rem; }
       .nav { width:100%; }
       .nav a { flex:1; text-align:center; }
-      .task { flex-direction:column; align-items:flex-start; }
     }
   </style>
 </head>
@@ -325,8 +337,8 @@
               </div>
 
               <div class="stat">
-                <small>Task Bonus</small>
-                <strong id="taskBonus">+0%</strong>
+                <small>Estimated ROI</small>
+                <strong id="roiCard">0%</strong>
               </div>
 
               <div class="stat">
@@ -337,29 +349,34 @@
           </div>
 
           <div class="card" style="margin-top:24px;">
-            <h3 class="section-title">Daily Tasks</h3>
+            <h3 class="section-title">Investment Overview</h3>
 
-            <div class="tasks" id="tasks">
-              <div class="task" data-task-id="market_update">
-                <span>Watch market update</span>
-                <button onclick="completeTask(this, 'market_update')">Claim $5</button>
+            <div class="overview-grid">
+              <div class="overview-box">
+                <small>Today's Earnings</small>
+                <strong id="todayEarnings">$0.00</strong>
               </div>
 
-              <div class="task" data-task-id="ai_strategy">
-                <span>Read AI strategy note</span>
-                <button onclick="completeTask(this, 'ai_strategy')">Claim $7</button>
+              <div class="overview-box">
+                <small>Weekly Earnings</small>
+                <strong id="weeklyEarnings">$0.00</strong>
               </div>
 
-              <div class="task" data-task-id="community_feed">
-                <span>Check community feed</span>
-                <button onclick="completeTask(this, 'community_feed')">Claim $3</button>
+              <div class="overview-box">
+                <small>Monthly Earnings</small>
+                <strong id="monthlyEarnings">$0.00</strong>
               </div>
 
-              <div class="task" data-task-id="weekly_portfolio">
-                <span>Complete weekly portfolio insight</span>
-                <button onclick="completeTask(this, 'weekly_portfolio')">Claim $20</button>
+              <div class="overview-box">
+                <small>Estimated ROI</small>
+                <strong id="estimatedRoi">0%</strong>
               </div>
             </div>
+          </div>
+
+          <div class="card" style="margin-top:24px;">
+            <h3 class="section-title">Market Insights</h3>
+            <div class="market-list" id="marketList"></div>
           </div>
         </div>
 
@@ -410,7 +427,6 @@
     }
 
     const USER_API = "https://lmnabcknd-production.up.railway.app/api/user";
-    const TASK_API = "https://lmnabcknd-production.up.railway.app/api/tasks";
 
     async function loadUserData() {
       try {
@@ -455,8 +471,6 @@
         document.getElementById("activeReferralCount").innerText = user.activeReferralCount || 0;
         document.getElementById("investBoost").innerText = "+" + (user.investBoostPercent || 0) + "%";
 
-        document.getElementById("taskBonus").innerText = "+" + (user.investBoostPercent || 0) + "%";
-
         document.getElementById("bonusText").innerText =
           "AI Invest boost: +" + (user.investBoostPercent || 0) + "% from active paid referrals";
 
@@ -470,34 +484,60 @@
       }
     }
 
-    async function loadTaskStatus() {
-      try {
-        const res = await fetch(TASK_API + "/status", {
-          headers: {
-            "Authorization": "Bearer " + token
-          }
-        });
+    function loadInvestmentOverview() {
+      const balance = Number(localStorage.getItem("luminaBalance") || 0);
+      const planActive = localStorage.getItem("luminaPlanActive") === "true";
+      const plan = Number(localStorage.getItem("luminaPlan") || 0);
 
-        const data = await res.json();
+      const planRoi = {
+        1: 12,
+        2: 16,
+        3: 22,
+        4: 28
+      };
 
-        if (!res.ok) return;
+      const roi = planActive ? (planRoi[plan] || 0) : 0;
 
-        data.tasks.forEach(task => {
-          const taskEl = document.querySelector(`[data-task-id="${task.id}"]`);
-          if (!taskEl) return;
+      const today = planActive ? balance * 0.015 : 0;
+      const weekly = planActive ? balance * 0.075 : 0;
+      const monthly = planActive ? balance * 0.22 : 0;
 
-          const btn = taskEl.querySelector("button");
+      document.getElementById("todayEarnings").innerText = "$" + today.toFixed(2);
+      document.getElementById("weeklyEarnings").innerText = "$" + weekly.toFixed(2);
+      document.getElementById("monthlyEarnings").innerText = "$" + monthly.toFixed(2);
+      document.getElementById("estimatedRoi").innerText = roi + "%";
+      document.getElementById("roiCard").innerText = roi + "%";
+    }
 
-          if (task.completed) {
-            taskEl.classList.add("done");
-            btn.innerText = "Completed";
-            btn.disabled = true;
-          }
-        });
+    const markets = [
+      "BTC", "ETH", "NASDAQ", "GOLD", "AAPL",
+      "TSLA", "NVDA", "META", "AMZN", "SOL",
+      "EUR/USD", "S&P 500", "MSFT", "GOOGL"
+    ];
 
-      } catch (error) {
-        console.log("Task status unavailable");
-      }
+    function randomPercent() {
+      return Number((Math.random() * 6 - 2).toFixed(2));
+    }
+
+    function loadMarketInsights() {
+      const box = document.getElementById("marketList");
+      box.innerHTML = "";
+
+      const shuffled = [...markets].sort(() => 0.5 - Math.random()).slice(0, 6);
+
+      shuffled.forEach(symbol => {
+        const percent = randomPercent();
+        const positive = percent >= 0;
+
+        box.innerHTML += `
+          <div class="market-item">
+            <small>${symbol}</small>
+            <span class="${positive ? "market-positive" : "market-negative"}">
+              ${positive ? "+" : ""}${percent}%
+            </span>
+          </div>
+        `;
+      });
     }
 
     function loadPaymentStatus() {
@@ -524,51 +564,6 @@
       }
     }
 
-    async function completeTask(button, taskId) {
-      const task = button.closest(".task");
-
-      if (task.classList.contains("done")) return;
-
-      try {
-        const res = await fetch(TASK_API + "/complete", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + token
-          },
-          body: JSON.stringify({ taskId })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          alert(data.message || "Task failed");
-          return;
-        }
-
-        localStorage.setItem("luminaBalance", data.newBalance);
-
-        document.getElementById("balance").innerText =
-          "$" + Number(data.newBalance).toFixed(2);
-
-        task.classList.add("done");
-        button.innerText = "Completed";
-        button.disabled = true;
-
-        alert(
-          "Task completed!\n\n" +
-          "Base reward: $" + data.baseReward + "\n" +
-          "Your referrals: " + data.referralCount + "\n" +
-          "Referral bonus: +" + data.referralBonusPercent + "%\n" +
-          "Final reward: $" + data.finalReward + "\n" +
-          "New balance: $" + data.newBalance
-        );
-
-      } catch (error) {
-        alert("Backend not reachable. Start server first.");
-      }
-    }
-
     function copyReferral() {
       const text = document.getElementById("refLink").innerText;
 
@@ -588,8 +583,11 @@
 
     async function initDashboard() {
       await loadUserData();
-      await loadTaskStatus();
+      loadInvestmentOverview();
+      loadMarketInsights();
       loadPaymentStatus();
+
+      setInterval(loadMarketInsights, 60000);
     }
 
     initDashboard();
