@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumina Contact</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root { --gold:#d4af37; --text:#e0e7ff; --muted:#94a3b8; --panel:rgba(15,23,42,.88); }
+    * { box-sizing:border-box; margin:0; padding:0; }
+
+    body {
+      font-family:Inter,sans-serif;
+      background:#0a1428;
+      color:var(--text);
+      min-height:100vh;
+      padding:24px;
+    }
+
+    .browser {
+      max-width:900px;
+      margin:auto;
+      background:#1e2937;
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:0 30px 90px rgba(0,0,0,.75);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .title-bar {
+      height:46px;
+      background:#1e2937;
+      display:flex;
+      align-items:center;
+      padding:0 18px;
+      gap:8px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+
+    .dot { width:13px; height:13px; border-radius:50%; }
+    .red { background:#ff5f57; }
+    .yellow { background:#ffbd2e; }
+    .green { background:#27c93f; }
+
+    .page {
+      position:relative;
+      min-height:85vh;
+      padding:60px 28px;
+      overflow:hidden;
+      background:#0a1428;
+    }
+
+    .page::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:url("https://www.deloitte.com/content/dam/assets-zone2/lu/en/img/promos/industries/financial-services/2023/lu_wealth-management-private-banking-efma_1x1.jpg") center/cover no-repeat;
+      filter:blur(24px) brightness(.42);
+      transform:scale(1.15);
+      z-index:1;
+    }
+
+    .page > * { position:relative; z-index:2; }
+
+    h1 {
+      text-align:center;
+      font-size:3rem;
+      font-weight:800;
+      background:linear-gradient(90deg,#e0f2fe,var(--gold),#bae6fd);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      margin-bottom:10px;
+    }
+
+    .subtitle {
+      text-align:center;
+      color:var(--muted);
+      margin-bottom:34px;
+      line-height:1.6;
+    }
+
+    .card {
+      max-width:620px;
+      margin:auto;
+      background:var(--panel);
+      backdrop-filter:blur(18px);
+      border:1px solid rgba(212,175,55,.3);
+      border-radius:30px;
+      padding:34px;
+      box-shadow:0 22px 70px rgba(0,0,0,.45);
+    }
+
+    .contact-btn {
+      display:block;
+      width:100%;
+      margin-top:16px;
+      padding:18px;
+      border-radius:999px;
+      text-align:center;
+      text-decoration:none;
+      font-weight:900;
+      font-size:1.05rem;
+      background:linear-gradient(#d4af37,#f0d080);
+      color:#0a1428;
+    }
+
+    .contact-btn.secondary {
+      background:rgba(15,23,42,.75);
+      border:1px solid rgba(212,175,55,.28);
+      color:#fde68a;
+    }
+
+    .info {
+      margin-top:22px;
+      color:#cbd5e1;
+      text-align:center;
+      line-height:1.6;
+      font-size:.95rem;
+    }
+
+    .back {
+      display:block;
+      margin-top:22px;
+      text-align:center;
+      color:#fde68a;
+      text-decoration:none;
+      font-weight:800;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="browser">
+    <div class="title-bar">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+    </div>
+
+    <div class="page">
+      <h1>Contact Admin</h1>
+      <p class="subtitle">
+        Contact our admin team for payment verification, approval, withdrawals, or account support.
+      </p>
+
+      <div class="card">
+        <a class="contact-btn" target="_blank">
+          luminasupport@luminawealth.cc 
+        </a>
+
+        <a class="contact-btn secondary" href="https://t.me/udpsense" target="_blank">
+          📞 Contact on Telegram - Live Chat 
+        </a>
+
+        <p class="info">
+          Please include your Payment ID, registered email, and selected plan when contacting admin.
+        </p>
+
+        <a class="back" href="dashboard.html">← Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
