@@ -454,13 +454,20 @@
         localStorage.setItem("luminaReferralCode", user.referralCode);
         localStorage.setItem("luminaReferralCount", user.referralCount || 0);
         localStorage.setItem("luminaActiveReferralCount", user.activeReferralCount || 0);
-        localStorage.setItem("luminaInvestBoostPercent", user.investBoostPercent || 0);
+
+        const activeRefs = Number(user.activeReferralCount || 0);
+        const investBoost = activeRefs * 7;
+
+        localStorage.setItem("luminaInvestBoostPercent", investBoost);
+
         localStorage.setItem("luminaPlan", user.plan || 0);
         localStorage.setItem("luminaPlanName", user.planName || "Free User");
         localStorage.setItem("luminaPlanActive", user.planActive ? "true" : "false");
 
         document.getElementById("username").innerText = user.fullName;
-        document.getElementById("balance").innerText = "$" + Number(user.balance).toFixed(2);
+
+        document.getElementById("balance").innerText =
+          "$" + Number(user.balance).toFixed(2);
 
         document.getElementById("currentPlan").innerText =
           user.planActive ? user.planName : "Free User";
@@ -468,12 +475,17 @@
         document.getElementById("planStatus").innerText =
           user.planActive ? "Active" : "Inactive";
 
-        document.getElementById("referralCount").innerText = user.referralCount || 0;
-        document.getElementById("activeReferralCount").innerText = user.activeReferralCount || 0;
-        document.getElementById("investBoost").innerText = "+" + (user.investBoostPercent || 0) + "%";
+        document.getElementById("referralCount").innerText =
+          user.referralCount || 0;
+
+        document.getElementById("activeReferralCount").innerText =
+          user.activeReferralCount || 0;
+
+        document.getElementById("investBoost").innerText =
+          "+" + investBoost + "%";
 
         document.getElementById("bonusText").innerText =
-          "AI Invest boost: +" + (user.investBoostPercent || 0) + "% from active paid referrals";
+          "AI Invest boost: +" + investBoost + "% from active paid referrals";
 
         if (user.referralCode) {
           document.getElementById("refLink").innerText =
