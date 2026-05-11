@@ -566,14 +566,13 @@
 
         AI investment completed successfully.
       `;
-
-      setTimeout(renderCompanies, 4000);
+      
     }
 
     shuffleCompanies();
     setInterval(updateLiveData, 20000);
     setInterval(shuffleCompanies, 20000);
-    setInterval(renderCompanies, 1000);
+    setInterval(loadTradeStatus, 1000);
   </script>
 </body>
 </html>
