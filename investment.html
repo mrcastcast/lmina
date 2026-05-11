@@ -518,25 +518,56 @@
         return;
       }
 
-      const randomFactor = randomBetween(-3, 5);
-      const simulatedReturn = +(company.trend + randomFactor).toFixed(2);
-      const profit = +(amount * simulatedReturn / 100).toFixed(2);
-      const finalAmount = +(amount + profit).toFixed(2);
-
       resultBox.classList.add("show");
+
       resultBox.innerHTML = `
-        <p><strong>Simulated 30-day result:</strong></p>
-        <p style="margin-top:8px;">
-          Return:
-          <span class="${simulatedReturn >= 0 ? "positive" : "negative"}">
-            ${simulatedReturn >= 0 ? "+" : ""}${simulatedReturn}%
-          </span>
-        </p>
-        <p>Demo gain/loss: <strong>${profit}</strong></p>
-        <p>Final demo value: <strong>${finalAmount}</strong></p>
+        🤖 AI analyzing market trends...<br><br>
+        Preparing investment into <strong>${company.name}</strong>...
       `;
 
-      setTimeout(renderCompanies, 1200);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      resultBox.innerHTML = `
+        📊 Executing AI investment...<br><br>
+        Monitoring volatility, liquidity and market sentiment...
+      `;
+
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      resultBox.innerHTML = `
+        ⏳ Finalizing transaction...<br><br>
+        AI securing optimized entry point...
+      `;
+
+      await new Promise(resolve => setTimeout(resolve, 1800));
+
+      const randomFactor = randomBetween(-3, 5);
+      const simulatedReturn = +(company.trend + randomFactor).toFixed(2);
+
+      const profit = +(amount * simulatedReturn / 100).toFixed(2);
+
+      const finalAmount = +(amount + profit).toFixed(2);
+
+      resultBox.innerHTML = `
+        ✅ Investment Successfully Executed<br><br>
+
+        <strong>Company:</strong> ${company.name}<br>
+        <strong>AI Return:</strong>
+        <span class="${simulatedReturn >= 0 ? "positive" : "negative"}">
+          ${simulatedReturn >= 0 ? "+" : ""}${simulatedReturn}%
+        </span><br>
+
+        <strong>Profit Generated:</strong>
+        <span class="${profit >= 0 ? "positive" : "negative"}">
+          ${profit >= 0 ? "+" : ""}$${Math.abs(profit)}
+        </span><br>
+
+        <strong>Final Portfolio Value:</strong> $${finalAmount}<br><br>
+
+        AI investment completed successfully.
+      `;
+
+      setTimeout(renderCompanies, 4000);
     }
 
     shuffleCompanies();
