@@ -427,6 +427,7 @@
     }
 
     const USER_API = "https://lmnabcknd-production.up.railway.app/api/user";
+    const TRANSACTION_API = "https://lmnabcknd-production.up.railway.app/api/transactions";
 
     async function loadUserData() {
       try {
@@ -484,29 +485,86 @@
       }
     }
 
-    function loadInvestmentOverview() {
-      const balance = Number(localStorage.getItem("luminaBalance") || 0);
-      const planActive = localStorage.getItem("luminaPlanActive") === "true";
+    async function loadInvestmentOverview() {
       const plan = Number(localStorage.getItem("luminaPlan") || 0);
+      const planActive = localStorage.getItem("luminaPlanActive") === "true";
+      const activeReferrals = Number(localStorage.getItem("luminaActiveReferralCount") || 0);
 
-      const planRoi = {
-        1: 12,
-        2: 16,
-        3: 22,
-        4: 28
+      const plans = {
+        1: { price: 250, monthlyProfit: 150 },
+        2: { price: 600, monthlyProfit: 380 },
+        3: { price: 1150, monthlyProfit: 650 },
+        4: { price: 2100, monthlyProfit: 1150 }
       };
 
-      const roi = planActive ? (planRoi[plan] || 0) : 0;
+      if (!planActive || !plans[plan]) {
+        document.getElementById("todayEarnings").innerText = "$0.00";
+        document.getElementById("weeklyEarnings").innerText = "$0.00";
+        document.getElementById("monthlyEarnings").innerText = "$0.00";
+        document.getElementById("estimatedRoi").innerText = "0%";
+        document.getElementById("roiCard").innerText = "0%";
+        return;
+      }
 
-      const today = planActive ? balance * 0.015 : 0;
-      const weekly = planActive ? balance * 0.075 : 0;
-      const monthly = planActive ? balance * 0.22 : 0;
+      const baseMonthly = plans[plan].monthlyProfit;
+      const planPrice = plans[plan].price;
 
-      document.getElementById("todayEarnings").innerText = "$" + today.toFixed(2);
-      document.getElementById("weeklyEarnings").innerText = "$" + weekly.toFixed(2);
-      document.getElementById("monthlyEarnings").innerText = "$" + monthly.toFixed(2);
-      document.getElementById("estimatedRoi").innerText = roi + "%";
-      document.getElementById("roiCard").innerText = roi + "%";
+      // 1 active paid referral = +20%
+      // 5 active paid referrals = +100%
+      const referralBoostPercent = activeReferrals * 20;
+      const referralMultiplier = 1 + referralBoostPercent / 100;
+
+      const monthlyWithReferral = baseMonthly * referralMultiplier;
+      const weeklyWithReferral = monthlyWithReferral / 4;
+      const estimatedRoi = (monthlyWithReferral / planPrice) * 100;
+
+      let todayEarnings = 0;
+
+      try {
+        const res = await fetch(TRANSACTION_API + "/my", {
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.transactions) {
+          const today = new Date().toDateString();
+
+          todayEarnings = data.transactions
+            .filter(t => {
+              const txDate = new Date(t.createdAt).toDateString();
+
+              return (
+                txDate === today &&
+                (
+                  t.type === "trade_simulation" ||
+                  t.title === "AI Investment Reward"
+                )
+              );
+            })
+            .reduce((sum, t) => sum + Number(t.amount || 0), 0);
+        }
+
+      } catch (error) {
+        todayEarnings = 0;
+      }
+
+      document.getElementById("todayEarnings").innerText =
+        "$" + todayEarnings.toFixed(2);
+
+      document.getElementById("weeklyEarnings").innerText =
+        "$" + weeklyWithReferral.toFixed(2);
+
+      document.getElementById("monthlyEarnings").innerText =
+        "$" + monthlyWithReferral.toFixed(2);
+
+      document.getElementById("estimatedRoi").innerText =
+        estimatedRoi.toFixed(1) + "%";
+
+      document.getElementById("roiCard").innerText =
+        estimatedRoi.toFixed(1) + "%";
     }
 
     const markets = [
