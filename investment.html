@@ -488,7 +488,7 @@
           </div>
 
           <div class="input-row">
-            <input id="amount-${index}" type="number" placeholder="amount %" value="100%">
+            <input id="amount-${index}" type="number" placeholder="amount %" value="100">
             <button onclick="simulate(${index})" ${isBlocked ? "disabled" : ""}>
               ${!status?.planActive ? "Plan Inactive" : isBlocked ? "Cooldown" : "Invest"}
             </button>
